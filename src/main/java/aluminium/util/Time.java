@@ -1,8 +1,6 @@
 package aluminium.util;
 
 import aluminium.struct.*;
-import aluminium.func.*;
-import aluminium.util.Timer.*;
 import aluminium.util.pooling.Pool.*;
 import aluminium.util.pooling.*;
 
@@ -13,29 +11,11 @@ public class Time{
     /** Global delta value. Do not change. */
     public static float delta = 1f;
     /** Global time values. Do not change. */
-    public static float time, globalTime;
+    public static float time;
 
     public static final long nanosPerMilli = 1000000;
 
-    private static double timeRaw, globalTimeRaw;
-
-    private static Seq<DelayRun> runs = new Seq<>();
-    private static Seq<DelayRun> removal = new Seq<>();
     private static LongSeq marks = new LongSeq();
-    private static Floatp deltaimpl = () -> Math.min(Core.graphics.getDeltaTime() * 60f, 3f);
-
-    /** Runs a task with a delay of several ticks. If Time.clear() is called, this task will be cancelled. */
-    public static void run(float delay, Runnable r){
-        DelayRun run = Pools.obtain(DelayRun.class, DelayRun::new);
-        run.finish = r;
-        run.delay = delay;
-        runs.add(run);
-    }
-
-    /** Runs a task with a delay of several ticks. Unless the application is closed, this task will always complete. */
-    public static Task runTask(float delay, Runnable r){
-        return Timer.schedule(r, delay / 60f);
-    }
 
     public static void mark(){
         marks.add(nanos());
@@ -48,52 +28,6 @@ public class Time{
         }else{
             return timeSinceNanos(marks.pop()) / 1000000f;
         }
-    }
-
-    public static void updateGlobal(){
-        globalTimeRaw += Core.graphics.getDeltaTime()*60f;
-        delta = deltaimpl.get();
-
-        if(Double.isInfinite(timeRaw) || Double.isNaN(timeRaw)){
-            timeRaw = 0;
-        }
-
-        time = (float)timeRaw;
-        globalTime = (float)globalTimeRaw;
-    }
-
-    /** Use normal delta time (e. g. delta * 60) */
-    public static void update(){
-        timeRaw += delta;
-        removal.clear();
-
-        if(Double.isInfinite(timeRaw) || Double.isNaN(timeRaw)){
-            timeRaw = 0;
-        }
-
-        time = (float)timeRaw;
-        globalTime = (float)globalTimeRaw;
-
-        for(DelayRun run : runs){
-            run.delay -= delta;
-
-            if(run.delay <= 0){
-                run.finish.run();
-                removal.add(run);
-                Pools.free(run);
-            }
-        }
-
-        runs.removeAll(removal);
-    }
-
-    public static void clear(){
-        runs.clear();
-    }
-
-    public static void setDeltaProvider(Floatp impl){
-        deltaimpl = impl;
-        delta = impl.get();
     }
 
     /** @return The current value of the system timer, in nanoseconds. */
@@ -142,14 +76,4 @@ public class Time{
         return millis() - prevTime;
     }
 
-    public static class DelayRun implements Poolable{
-        float delay;
-        Runnable finish;
-
-        @Override
-        public void reset(){
-            delay = 0;
-            finish = null;
-        }
-    }
 }
