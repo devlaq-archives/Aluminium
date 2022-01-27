@@ -1,6 +1,8 @@
 package aluminium.struct;
 
 import aluminium.func.*;
+import aluminium.math.Mathf;
+import aluminium.math.Rand;
 import aluminium.util.*;
 
 import java.util.*;
@@ -886,7 +888,7 @@ public class Seq<T> implements Iterable<T>, Eachable<T>{
 
     /**
      * Selects the nth-lowest element from the Seq according to Comparator ranking. This might partially sort the Array. The
-     * array must have a size greater than 0, or a {@link ArcRuntimeException} will be thrown.
+     * array must have a size greater than 0, or a {@link AluRuntimeException} will be thrown.
      * @param comparator used for comparison
      * @param kthLowest rank of desired object according to comparison, n is based on ordinal numbers, not array indices. for min
      * value use 1, for max value use size of array, using 0 results in runtime exception.
@@ -895,7 +897,7 @@ public class Seq<T> implements Iterable<T>, Eachable<T>{
      */
     public T selectRanked(Comparator<T> comparator, int kthLowest){
         if(kthLowest < 1){
-            throw new ArcRuntimeException("nth_lowest must be greater than 0, 1 = first, 2 = second...");
+            throw new AluRuntimeException("nth_lowest must be greater than 0, 1 = first, 2 = second...");
         }
         return Select.instance().select(items, comparator, kthLowest, size);
     }
@@ -909,7 +911,7 @@ public class Seq<T> implements Iterable<T>, Eachable<T>{
      */
     public int selectRankedIndex(Comparator<T> comparator, int kthLowest){
         if(kthLowest < 1){
-            throw new ArcRuntimeException("nth_lowest must be greater than 0, 1 = first, 2 = second...");
+            throw new AluRuntimeException("nth_lowest must be greater than 0, 1 = first, 2 = second...");
         }
         return Select.instance().selectIndex(items, comparator, kthLowest, size);
     }
@@ -1132,7 +1134,7 @@ public class Seq<T> implements Iterable<T>, Eachable<T>{
 
             @Override
             public void remove(){
-                if(!allowRemove) throw new ArcRuntimeException("Remove not allowed.");
+                if(!allowRemove) throw new AluRuntimeException("Remove not allowed.");
                 index--;
                 array.remove(index);
             }

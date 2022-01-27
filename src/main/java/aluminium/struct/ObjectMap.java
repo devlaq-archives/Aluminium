@@ -2,6 +2,7 @@ package aluminium.struct;
 
 import aluminium.func.Cons2;
 import aluminium.func.Prov;
+import aluminium.math.Mathf;
 import aluminium.util.AluRuntimeException;
 
 import java.util.Iterator;
