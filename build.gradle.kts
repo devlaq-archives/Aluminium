@@ -3,7 +3,7 @@ plugins {
 }
 
 group = "com.github.devlaq"
-version = "1.0-SNAPSHOT"
+version = "1.1.3"
 
 repositories {
     mavenCentral()
