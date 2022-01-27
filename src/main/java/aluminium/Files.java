@@ -1,5 +1,6 @@
 package aluminium;
 
+import aluminium.backends.ClasspathFi;
 import aluminium.files.Fi;
 import aluminium.util.AluRuntimeException;
 
@@ -16,6 +17,11 @@ public interface Files{
      * @see FileType
      */
     Fi get(String path, FileType type);
+
+    /** Convenience method that returns a {@link FileType#classpath} file handle. */
+    default ClasspathFi classpath(String path, Class<?> clazz) {
+        return new ClasspathFi(path, clazz);
+    }
 
     /** Convenience method that returns a {@link FileType#classpath} file handle. */
     default Fi classpath(String path){

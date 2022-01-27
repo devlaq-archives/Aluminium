@@ -208,6 +208,21 @@ public class Fi{
     }
 
     /**
+     * Returns a stream for reading this file as bytes.
+     * @param c reads classpath file from c
+     * @throws AluRuntimeException if the file handle represents a directory, doesn't exist, or could not be read.
+     */
+    public InputStream read(Class<?> c) {
+        if(type == FileType.classpath || (type == FileType.internal && !file().exists())
+                || (type == FileType.local && !file().exists())){
+            InputStream input = c.getResourceAsStream("/" + file.getPath().replace('\\', '/'));
+            if(input == null) throw new AluRuntimeException("File not found: " + file + " (" + type + ")");
+            return input;
+        }
+        return read();
+    }
+
+    /**
      * Returns a buffered stream for reading this file as bytes.
      * @throws AluRuntimeException if the file handle represents a directory, doesn't exist, or could not be read.
      */
@@ -781,6 +796,21 @@ public class Fi{
     }
 
     /**
+     * Returns true if the file exists.
+     * @param c checks classpath file from c.
+     */
+    public boolean exists(Class<?> c){
+        switch(type){
+            case internal:
+                if(file().exists()) return true;
+                // Fall through.
+            case classpath:
+                return c.getResource("/" + file.getPath().replace('\\', '/')) != null;
+        }
+        return file().exists();
+    }
+
+    /**
      * Deletes this file or empty directory and returns success. Will not delete a directory that has children.
      * @throws AluRuntimeException if this file handle is a {@link FileType#classpath} or {@link FileType#internal} file.
      */
@@ -884,6 +914,25 @@ public class Fi{
     public long length(){
         if(type == FileType.classpath || (type == FileType.internal && !file.exists())){
             InputStream input = read();
+            try{
+                return input.available();
+            }catch(Exception ignored){
+            }finally{
+                Streams.close(input);
+            }
+            return 0;
+        }
+        return file().length();
+    }
+
+    /**
+     * Returns the length in bytes of this file, or 0 if this file is a directory, does not exist, or the size cannot otherwise be
+     * determined.
+     * @param c check classpath file from c.
+     */
+    public long length(Class<?> c) {
+        if(type == FileType.classpath || (type == FileType.internal && !file.exists())){
+            InputStream input = read(c);
             try{
                 return input.available();
             }catch(Exception ignored){
