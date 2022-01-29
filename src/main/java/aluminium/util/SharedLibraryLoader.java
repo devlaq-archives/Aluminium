@@ -149,7 +149,7 @@ public class SharedLibraryLoader{
     private File getExtractedFile(String dirName, String fileName){
         // Temp directory with username in path.
         File idealFile = new File(
-                System.getProperty("java.io.tmpdir") + "/arc" + username + "/" + dirName, fileName);
+                System.getProperty("java.io.tmpdir") + "/alu" + username + "/" + dirName, fileName);
         if(canWrite(idealFile)) return idealFile;
 
         // System provided temp directory.
@@ -163,7 +163,7 @@ public class SharedLibraryLoader{
         }
 
         // User home.
-        File file = new File(userHome + "/.arc/" + dirName, fileName);
+        File file = new File(userHome + "/.alu/" + dirName, fileName);
         if(canWrite(file)) return file;
 
         // Relative directory.
@@ -254,8 +254,8 @@ public class SharedLibraryLoader{
 
         String fileName = new File(sourcePath).getName();
 
-        // Temp directory with arc in path.
-        File file = new File(System.getProperty("java.io.tmpdir") + "/arc/" + sourceCrc, fileName);
+        // Temp directory with alu in path.
+        File file = new File(System.getProperty("java.io.tmpdir") + "/alu/" + sourceCrc, fileName);
         Throwable result;
         if((result = loadFile(sourcePath, sourceCrc, file)) == null) return;
 
@@ -267,7 +267,7 @@ public class SharedLibraryLoader{
         }
 
         // User home.
-        file = new File(userHome + "/.arc/" + sourceCrc, fileName);
+        file = new File(userHome + "/.alu/" + sourceCrc, fileName);
         if(loadFile(sourcePath, sourceCrc, file) == null) return;
 
         // Relative directory.
