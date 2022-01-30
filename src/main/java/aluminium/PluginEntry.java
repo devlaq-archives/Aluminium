@@ -10,6 +10,6 @@ public class PluginEntry extends JavaPlugin {
     public void onEnable() {
         Aluminium.files = new AluFiles();
         Aluminium.bundles = new Bundles();
-
     }
+
 }
